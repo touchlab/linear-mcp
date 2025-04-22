@@ -30,7 +30,7 @@
     "open": "^10.1.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "@graphql-typed-document-node/core": "^3.2.0",

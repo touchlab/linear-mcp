@@ -37,6 +37,9 @@ class LinearServer {
 
     this.auth = new LinearAuth();
     
+    // Log the environment variable to check if it's being passed correctly
+    console.error(`[DEBUG] LINEAR_ACCESS_TOKEN: ${process.env.LINEAR_ACCESS_TOKEN}`);
+
     // Initialize with PAT if available
     const accessToken = process.env.LINEAR_ACCESS_TOKEN;
     if (accessToken) {
