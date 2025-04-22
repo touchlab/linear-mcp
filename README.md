@@ -18,6 +18,7 @@ This server **requires** a **Linear Personal Access Token (PAT)**.
 1.  Go to your Linear workspace settings: **Account > Security & access**.
 
 ![Step1](./photos/Step1.png)
+
 2.  Under the **Personal API keys** section, click **New API key**.
 
 ![Step2](./photos/Step2.png)
