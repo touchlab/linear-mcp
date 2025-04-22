@@ -1,6 +1,6 @@
 {
   "name": "linear-mcp-integration",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "MCP server providing tools to interact with the Linear API (Issues, Projects, Teams).",
   "main": "build/index.js",
   "type": "module",
