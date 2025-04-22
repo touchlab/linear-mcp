@@ -68,6 +68,7 @@ export const UPDATE_ISSUES_MUTATION = gql`
   }
 `;
 
+/* // Remove unused bulk delete mutation
 export const DELETE_ISSUES_MUTATION = gql`
   mutation DeleteIssues($ids: [String!]!) {
     issueDelete(ids: $ids) {
@@ -75,6 +76,7 @@ export const DELETE_ISSUES_MUTATION = gql`
     }
   }
 `;
+*/
 
 export const DELETE_ISSUE_MUTATION = gql`
   mutation DeleteIssue($id: String!) {

@@ -77,7 +77,7 @@ async function runLinearServer() {
   server.tool(
     'linear_auth',
     {
-      clientId: z.string().describe('Linear OAuth client ID'),
+      clientId: z.string().describe('Linear OAuth client ID (Untested)'),
       clientSecret: z.string().describe('Linear OAuth client secret'),
       redirectUri: z.string().describe('OAuth redirect URI'),
     },
@@ -91,7 +91,7 @@ async function runLinearServer() {
   server.tool(
     'linear_auth_callback',
     {
-      code: z.string().describe('OAuth authorization code'),
+      code: z.string().describe('OAuth authorization code (Untested)'),
     },
     async (args) => {
       const { handler, method } = getHandler('linear_auth_callback');
@@ -140,12 +140,13 @@ async function runLinearServer() {
     }
   );
 
+  /* // Remove bulk update tool definition
   // linear_bulk_update_issues
   server.tool(
     'linear_bulk_update_issues',
     {
       issueIds: z.array(z.string()).describe('List of issue IDs to update'),
-      update: z.object({
+      update: z.object({ // Nested object definition
         stateId: z.string().describe('New state ID').optional(),
         assigneeId: z.string().describe('New assignee ID').optional(),
         priority: z.number().describe('New priority (0-4)').optional(),
@@ -156,6 +157,7 @@ async function runLinearServer() {
       return (handler as any)[method](args);
     }
   );
+  */
 
   // linear_search_issues
   server.tool(
@@ -208,6 +210,7 @@ async function runLinearServer() {
     }
   );
 
+  /* // Remove bulk delete tool definition
   // linear_delete_issues
   server.tool(
     'linear_delete_issues',
@@ -219,6 +222,7 @@ async function runLinearServer() {
       return (handler as any)[method](args);
     }
   );
+  */
 
   // linear_get_project
   server.tool(
@@ -265,19 +269,6 @@ async function runLinearServer() {
       return (handler as any)[method](args);
     }
   );
-
-  // linear_echo (from available tools list, map to handler factory if exists or add a basic echo handler)
-  // For now, let's just define it to return an error if called unexpectedly
-  server.tool(
-    'linear_echo',
-    { message: z.string().describe('The message to echo') },
-    async (args) => {
-        console.error("linear_echo tool called - this might be unexpected.");
-        // Example: return { content: [{ type: "text", text: `Echo: ${args.message}` }] };
-        throw new McpError(ErrorCode.MethodNotFound, "linear_echo not fully implemented in refactored server.");
-    }
-  );
-
 
   // --- Handle Process Exit Gracefully ---
   process.on('SIGINT', async () => {

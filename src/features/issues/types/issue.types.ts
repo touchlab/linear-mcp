@@ -123,8 +123,6 @@ export interface DeleteIssueResponse {
 export interface IssueHandlerMethods {
   handleCreateIssue(args: CreateIssueInput): Promise<BaseToolResponse>;
   handleCreateIssues(args: CreateIssuesInput): Promise<BaseToolResponse>;
-  handleBulkUpdateIssues(args: BulkUpdateIssuesInput): Promise<BaseToolResponse>;
   handleSearchIssues(args: SearchIssuesInput): Promise<BaseToolResponse>;
   handleDeleteIssue(args: DeleteIssueInput): Promise<BaseToolResponse>;
-  handleDeleteIssues(args: DeleteIssuesInput): Promise<BaseToolResponse>;
 }

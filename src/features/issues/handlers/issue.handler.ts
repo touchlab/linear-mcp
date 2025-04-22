@@ -88,32 +88,6 @@ export class IssueHandler extends BaseHandler implements IssueHandlerMethods {
   }
 
   /**
-   * Updates multiple issues in bulk.
-   */
-  async handleBulkUpdateIssues(args: BulkUpdateIssuesInput): Promise<BaseToolResponse> {
-    try {
-      const client = this.verifyAuth();
-      this.validateRequiredParams(args, ['issueIds', 'update']);
-
-      if (!Array.isArray(args.issueIds)) {
-        throw new Error('IssueIds parameter must be an array');
-      }
-
-      const result = await client.updateIssues(args.issueIds, args.update) as UpdateIssuesResponse;
-
-      if (!result.issueUpdate.success) {
-        throw new Error('Failed to update issues');
-      }
-
-      const updatedCount = result.issueUpdate.issues.length;
-
-      return this.createResponse(`Successfully updated ${updatedCount} issues`);
-    } catch (error) {
-      this.handleError(error, 'update issues');
-    }
-  }
-
-  /**
    * Searches for issues with filtering and pagination.
    */
   async handleSearchIssues(args: SearchIssuesInput): Promise<BaseToolResponse> {
@@ -174,9 +148,11 @@ export class IssueHandler extends BaseHandler implements IssueHandlerMethods {
     }
   }
 
+  /* // Remove bulk delete handler method
   /**
    * Deletes multiple issues in bulk.
    */
+  /*
   async handleDeleteIssues(args: DeleteIssuesInput): Promise<BaseToolResponse> {
     try {
       const client = this.verifyAuth();
@@ -199,4 +175,5 @@ export class IssueHandler extends BaseHandler implements IssueHandlerMethods {
       this.handleError(error, 'delete issues');
     }
   }
+  */
 }
