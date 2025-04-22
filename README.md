@@ -104,7 +104,7 @@ The server currently supports the following tools (tested with PAT authenticatio
 
 ## Development (For Contributors)
 
-If you want to contribute to the server development:
+If you want to run the MCP server locally first run these commands:
 
 ```bash
 # Clone the repository
@@ -119,15 +119,8 @@ npm run build
 
 # Start the server (requires LINEAR_ACCESS_TOKEN in .env or environment)
 npm start
-
-# Tests are not currently configured
-# npm test 
-# npm run test:integration 
 ```
 
-### Run Locally
-
-To run the MCP server locally, pull the repository down locally and build the project with `npm run build`.
 Then update your MCP configuration to point to the built `index.js`.
 
 ```json
@@ -144,6 +137,8 @@ Then update your MCP configuration to point to the built `index.js`.
   }
 }    
 ```
+
+Your client should now be able to access your MCP server.
 
 ## Contributing
 
