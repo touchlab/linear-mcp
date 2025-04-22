@@ -1,12 +1,19 @@
 # Linear MCP Server (Fork)
 
-A fork of an MCP server for interacting with Linear's API. This server provides a set of tools for managing Linear issues, projects, and teams via the Model Context Protocol.
+This project is a **fork** of the original Linear MCP server implementation from [cline/linear-mcp](https://github.com/cline/linear-mcp). It is currently under **active refactoring, development, and testing**.
+
+This server provides a set of tools for managing Linear issues, projects, and teams via the Model Context Protocol.
+
+**Current Status:**
+*   Personal Access Token (PAT) authentication is implemented and tested.
+*   Core functionality for managing issues, projects, teams, and users via PAT has been tested.
+*   OAuth 2.0 flow exists in the code but is **untested and likely non-functional**.
 
 ## Setup Guide
 
 ### 1. Environment Setup
 
-1.  Clone this repository.
+1.  Clone this repository (`touchlab/linear-mcp-integration`).
 2.  Install dependencies:
     ```bash
     npm install
@@ -18,9 +25,9 @@ A fork of an MCP server for interacting with Linear's API. This server provides 
 
 ### 2. Authentication
 
-This server **requires** a **Personal Access Token (PAT)** for authentication. OAuth 2.0 flow is present in the code but is untested and likely non-functional.
+This server **requires** a **Personal Access Token (PAT)** for authentication.
 
-#### Personal Access Token (PAT) - Required & Recommended
+#### Personal Access Token (PAT) - Required & Tested
 
 1.  Go to your Linear workspace settings: **Settings > API**.
 2.  Under the **Personal API keys** section, click **Create key**.
@@ -32,22 +39,17 @@ This server **requires** a **Personal Access Token (PAT)** for authentication. O
         ```
         LINEAR_ACCESS_TOKEN=lin_api_your_personal_access_token
         ```
-    *   **Option B: Using MCP Client Configuration (Recommended for tools like Cline)**
+    *   **Option B: Using MCP Client Configuration (Recommended)**
         Set the environment variable directly in your MCP client's configuration for this server (see Cline example below).
 
 #### OAuth Flow (Untested / Non-Functional)
 
-The code includes handlers for OAuth, but this flow has not been tested and may not work correctly. If you wish to experiment, you would need to:
+The code includes handlers for OAuth (`linear_auth`, `linear_auth_callback`), but this flow has **not been tested** and requires further development to be considered functional. If you wish to experiment or contribute to implementing OAuth:
 
-1.  Create an OAuth application at https://linear.app/settings/api/applications
-2.  Configure OAuth environment variables (e.g., in `.env` or client config):
-    ```
-    LINEAR_CLIENT_ID=your_oauth_client_id
-    LINEAR_CLIENT_SECRET=your_oauth_client_secret
-    LINEAR_REDIRECT_URI=http://localhost:3000/callback # Or your configured URI
-    ```
-3.  Potentially remove the `LINEAR_ACCESS_TOKEN` variable to prevent PAT default.
-4.  Invoke the `linear_auth` and `linear_auth_callback` tools.
+1.  You would need to create an OAuth application in Linear.
+2.  Configure the necessary environment variables (`LINEAR_CLIENT_ID`, `LINEAR_CLIENT_SECRET`, `LINEAR_REDIRECT_URI`).
+3.  Potentially disable PAT authentication.
+4.  Test and likely debug the existing OAuth handlers and the `@linear/sdk` token exchange process.
 
 ### 3. Running the Server
 
@@ -64,19 +66,19 @@ The code includes handlers for OAuth, but this flow has not been tested and may 
 
 ### 4. Cline Integration Example
 
-1.  Open your Cline MCP settings file (paths vary by OS, check Cline docs).
-2.  Add or update the Linear MCP server configuration, ensuring the `LINEAR_ACCESS_TOKEN` is provided in the `env` section:
+1.  Open your MCP settings file.
+2.  Add or update the Linear MCP server configuration:
     ```json
     {
       "mcpServers": {
         "linear": {
           "command": "node",
-          "args": ["/path/to/your/linear-mcp/build/index.js"], // Update path!
+          "args": ["/path/to/your/linear-mcp-integration/build/index.js"], // Update path!
           "env": {
             "LINEAR_ACCESS_TOKEN": "lin_api_your_personal_access_token"
           },
           "disabled": false,
-          "autoApprove": []
+          "autoApprove": [] // Configure as needed
         }
       }
     }
@@ -84,7 +86,7 @@ The code includes handlers for OAuth, but this flow has not been tested and may 
 
 ## Available Tools
 
-The server currently supports the following tools:
+The server currently supports the following tools (tested with PAT authentication unless noted):
 
 *   **Authentication (OAuth - Untested):**
     *   `linear_auth`: Initiate OAuth flow (Untested)
@@ -117,11 +119,13 @@ npm run build
 # Start the server (requires LINEAR_ACCESS_TOKEN)
 npm start
 
-# Run tests (if configured)
+# Tests are not currently configured
 # npm test 
 # npm run test:integration 
 ```
 
 ## Contributing
 
-This is a fork, and contributions specific to this version should be directed accordingly (e.g., via pull requests to this repository if applicable).
+This fork is currently maintained by [Touchlab](https://github.com/touchlab).
+
+**Contributions are welcome, especially for improving or fully implementing the OAuth 2.0 flow.** Please feel free to open issues or pull requests on the [touchlab/linear-mcp-integration](https://github.com/touchlab/linear-mcp-integration) repository.

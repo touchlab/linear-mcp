@@ -1,8 +1,8 @@
 {
-  "name": "linear-mcp",
-  "version": "0.1.0",
-  "description": "",
-  "main": "index.js",
+  "name": "linear-mcp-integration",
+  "version": "1.0.0",
+  "description": "MCP server providing tools to interact with the Linear API (Issues, Projects, Teams).",
+  "main": "build/index.js",
   "type": "module",
   "scripts": {
     "test": "jest",
@@ -15,9 +15,27 @@
     "start": "node build/index.js",
     "dev": "nodemon --watch src --ext ts --exec \"npm run build && npm start\""
   },
-  "keywords": [],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/touchlab/linear-mcp-integration.git"
+  },
+  "keywords": [
+    "linear",
+    "mcp",
+    "model-context-protocol",
+    "typescript",
+    "api",
+    "integration",
+    "issue tracking"
+  ],
+  "author": "Kevin Galligan <kgalligan@gmail.com>",
   "license": "ISC",
+  "files": [
+    "build/",
+    "README.md",
+    "LICENSE",
+    ".env.example"
+  ],
   "devDependencies": {
     "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.0",
