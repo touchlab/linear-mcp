@@ -16,14 +16,18 @@ This package is available on npm: [@touchlab/linear-mcp-integration](https://www
 This server **requires** a **Linear Personal Access Token (PAT)**.
 
 1.  Go to your Linear workspace settings: **Account > Security & access**.
+
 ![Step1](./photos/Step1.png)
 2.  Under the **Personal API keys** section, click **New API key**.
+
 ![Step2](./photos/Step2.png)
 3.  Give the key a descriptive label (e.g., "MCP Server Key"). 
 For Permissions select **Full Access**. 
 For team access select **All teams you have access to**
+
 ![Step3](./photos/Step3.png)
 4.  Copy the generated key immediately (it won't be shown again).
+
 ![Step4](./photos/Step4.png)
 5.  You will need to provide this key to the server using the `LINEAR_ACCESS_TOKEN` environment variable when running it (see Step 2).
 
