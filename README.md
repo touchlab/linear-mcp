@@ -2,7 +2,7 @@
 
 This project provides an MCP server for interacting with the Linear API, enabling integration with MCP clients like Cline, IDE extensions, and other AI tools. It provides tools for managing Linear issues, projects, and teams via the Model Context Protocol.
 
-This package is available on npm: [linear-mcp-integration](https://www.npmjs.com/package/linear-mcp-integration)
+This package is available on npm: [@touchlab/linear-mcp-integration](https://www.npmjs.com/package/@touchlab/linear-mcp-integration)
 
 **Current Status:**
 *   Personal Access Token (PAT) authentication is implemented and tested.
@@ -35,7 +35,7 @@ This method runs the server directly from the npm registry without global instal
   "mcpServers": {
     "linear": {
       "command": "npx", 
-      "args": ["linear-mcp-integration"], 
+      "args": ["@touchlab/linear-mcp-integration"],
       "env": {
         "LINEAR_ACCESS_TOKEN": "lin_api_your_personal_access_token"
       }
@@ -49,13 +49,13 @@ This method runs the server directly from the npm registry without global instal
 If you prefer, you can install the package globally:
 
 ```bash
-npm install -g linear-mcp-integration
+npm install -g @touchlab/linear-mcp-integration
 ```
 
 Then, you can run it directly from your terminal (you still need to provide the environment variable):
 
 ```bash
-LINEAR_ACCESS_TOKEN=lin_api_your_token linear-mcp-integration
+LINEAR_ACCESS_TOKEN=YOUR_PAT
 ```
 
 *(Note: Global installation is generally less preferred for server processes unless you have a specific need.)*

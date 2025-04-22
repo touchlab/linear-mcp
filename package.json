@@ -1,5 +1,5 @@
 {
-  "name": "linear-mcp-integration",
+  "name": "@touchlab/linear-mcp-integration",
   "version": "0.1.0",
   "description": "MCP server providing tools to interact with the Linear API (Issues, Projects, Teams).",
   "main": "build/index.js",
