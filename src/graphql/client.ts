@@ -27,6 +27,18 @@ import {
   UserResponse
 } from '../features/users/types/user.types.js';
 
+// Import mutations at the top level
+import { 
+    CREATE_ISSUE_MUTATION,
+    CREATE_PROJECT,
+    CREATE_BATCH_ISSUES,
+    UPDATE_ISSUES_MUTATION,
+    DELETE_ISSUE_MUTATION, // Import single delete mutation
+    DELETE_ISSUES_MUTATION, // Import bulk delete mutation
+    CREATE_ISSUE_LABELS 
+} from './mutations.js'; 
+import { SEARCH_ISSUES_QUERY, GET_TEAMS_QUERY, GET_USER_QUERY, GET_PROJECT_QUERY, SEARCH_PROJECTS_QUERY } from './queries.js';
+
 export class LinearGraphQLClient {
   private linearClient: LinearClient;
 
@@ -39,9 +51,16 @@ export class LinearGraphQLClient {
     variables?: V
   ): Promise<T> {
     const graphQLClient = this.linearClient.client;
+    const queryString = document.loc?.source.body || ''; // Get the query string
+    
+    // Log the query and variables just before execution
+    console.error(`[DEBUG] Executing GraphQL:`);
+    console.error(`[DEBUG] Query String: ${queryString.substring(0, 200)}...`); // Log truncated query
+    console.error(`[DEBUG] Variables: ${JSON.stringify(variables)}`);
+
     try {
       const response = await graphQLClient.rawRequest(
-        document.loc?.source.body || '',
+        queryString, // Use the extracted query string
         variables
       );
       return response.data as T;
@@ -55,13 +74,11 @@ export class LinearGraphQLClient {
 
   // Create single issue
   async createIssue(input: CreateIssueInput): Promise<CreateIssueResponse> {
-    const { CREATE_ISSUE_MUTATION } = await import('./mutations.js');
     return this.execute<CreateIssueResponse>(CREATE_ISSUE_MUTATION, { input: input });
   }
 
   // Create multiple issues
   async createIssues(issues: CreateIssueInput[]): Promise<IssueBatchResponse> {
-    const { CREATE_BATCH_ISSUES } = await import('./mutations.js');
     return this.execute<IssueBatchResponse>(CREATE_BATCH_ISSUES, {
       input: { issues }
     });
@@ -69,13 +86,11 @@ export class LinearGraphQLClient {
 
   // Create a project
   async createProject(input: ProjectInput): Promise<ProjectResponse> {
-    const { CREATE_PROJECT } = await import('./mutations.js');
     return this.execute<ProjectResponse>(CREATE_PROJECT, { input });
   }
 
   // Create batch of issues
   async createBatchIssues(issues: CreateIssueInput[]): Promise<IssueBatchResponse> {
-    const { CREATE_BATCH_ISSUES } = await import('./mutations.js');
     return this.execute<IssueBatchResponse>(CREATE_BATCH_ISSUES, {
       input: { issues }
     });
@@ -110,7 +125,6 @@ export class LinearGraphQLClient {
 
   // Update a single issue
   async updateIssue(id: string, input: UpdateIssueInput): Promise<UpdateIssuesResponse> {
-    const { UPDATE_ISSUES_MUTATION } = await import('./mutations.js');
     return this.execute<UpdateIssuesResponse>(UPDATE_ISSUES_MUTATION, {
       ids: [id],
       input,
@@ -119,13 +133,11 @@ export class LinearGraphQLClient {
 
   // Bulk update issues
   async updateIssues(ids: string[], input: UpdateIssueInput): Promise<UpdateIssuesResponse> {
-    const { UPDATE_ISSUES_MUTATION } = await import('./mutations.js');
     return this.execute<UpdateIssuesResponse>(UPDATE_ISSUES_MUTATION, { ids, input });
   }
 
   // Create multiple labels
   async createIssueLabels(labels: LabelInput[]): Promise<LabelResponse> {
-    const { CREATE_ISSUE_LABELS } = await import('./mutations.js');
     return this.execute<LabelResponse>(CREATE_ISSUE_LABELS, { labels });
   }
 
@@ -136,7 +148,6 @@ export class LinearGraphQLClient {
     after?: string, 
     orderBy: string = "updatedAt"
   ): Promise<SearchIssuesResponse> {
-    const { SEARCH_ISSUES_QUERY } = await import('./queries.js');
     return this.execute<SearchIssuesResponse>(SEARCH_ISSUES_QUERY, {
       filter,
       first,
@@ -147,37 +158,31 @@ export class LinearGraphQLClient {
 
   // Get teams with their states and labels
   async getTeams(): Promise<TeamResponse> {
-    const { GET_TEAMS_QUERY } = await import('./queries.js');
     return this.execute<TeamResponse>(GET_TEAMS_QUERY);
   }
 
   // Get current user info
   async getCurrentUser(): Promise<UserResponse> {
-    const { GET_USER_QUERY } = await import('./queries.js');
     return this.execute<UserResponse>(GET_USER_QUERY);
   }
 
   // Get project info
   async getProject(id: string): Promise<ProjectResponse> {
-    const { GET_PROJECT_QUERY } = await import('./queries.js');
     return this.execute<ProjectResponse>(GET_PROJECT_QUERY, { id });
   }
 
   // Search projects
   async searchProjects(filter: { name?: { eq: string } }): Promise<SearchProjectsResponse> {
-    const { SEARCH_PROJECTS_QUERY } = await import('./queries.js');
     return this.execute<SearchProjectsResponse>(SEARCH_PROJECTS_QUERY, { filter });
   }
 
   // Delete a single issue
   async deleteIssue(id: string): Promise<DeleteIssueResponse> {
-    const { DELETE_ISSUE_MUTATION } = await import('./mutations.js');
     return this.execute<DeleteIssueResponse>(DELETE_ISSUE_MUTATION, { id: id });
   }
 
   // Delete multiple issues
   async deleteIssues(ids: string[]): Promise<DeleteIssueResponse> {
-    const { DELETE_ISSUES_MUTATION } = await import('./mutations.js');
     return this.execute<DeleteIssueResponse>(DELETE_ISSUES_MUTATION, { ids });
   }
 }
