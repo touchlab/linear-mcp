@@ -171,8 +171,8 @@ export class LinearGraphQLClient {
 
   // Delete a single issue
   async deleteIssue(id: string): Promise<DeleteIssueResponse> {
-    const { DELETE_ISSUES_MUTATION } = await import('./mutations.js');
-    return this.execute<DeleteIssueResponse>(DELETE_ISSUES_MUTATION, { ids: [id] });
+    const { DELETE_ISSUE_MUTATION } = await import('./mutations.js');
+    return this.execute<DeleteIssueResponse>(DELETE_ISSUE_MUTATION, { id: id });
   }
 
   // Delete multiple issues

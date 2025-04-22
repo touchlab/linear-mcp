@@ -123,7 +123,7 @@ export class IssueHandler extends BaseHandler implements IssueHandlerMethods {
       const filter: Record<string, unknown> = {};
       
       if (args.query) {
-        filter.search = args.query;
+        filter.title = { containsIgnoreCase: args.query };
       }
       if (args.filter?.project?.id?.eq) {
         filter.project = { id: { eq: args.filter.project.id.eq } };

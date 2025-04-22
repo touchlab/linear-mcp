@@ -76,6 +76,14 @@ export const DELETE_ISSUES_MUTATION = gql`
   }
 `;
 
+export const DELETE_ISSUE_MUTATION = gql`
+  mutation DeleteIssue($id: String!) {
+    issueDelete(id: $id) {
+      success
+    }
+  }
+`;
+
 export const CREATE_ISSUE_LABELS = gql`
   mutation CreateIssueLabels($labels: [IssueLabelCreateInput!]!) {
     issueLabelCreate(input: $labels) {
