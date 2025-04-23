@@ -9,6 +9,10 @@ This package is available on npm: [@touchlab/linear-mcp-integration](https://www
 *   Core functionality for managing issues, projects, teams, and users via PAT has been tested.
 *   OAuth 2.0 flow exists in the code but is **untested and likely non-functional**.
 
+## Attribution
+
+This project is based on [cline/linear-mcp](https://github.com/cline/linear-mcp). The logic is largely the same, but key parts of the internals have been modified after testing.
+
 ## Setup Guide
 
 ### 1. Authentication (Required)
