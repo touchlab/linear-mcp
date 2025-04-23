@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-// import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   // CallToolRequestSchema,
@@ -210,20 +209,6 @@ async function runLinearServer() {
     }
   );
 
-  /* // Remove bulk delete tool definition
-  // linear_delete_issues
-  server.tool(
-    'linear_delete_issues',
-    {
-      ids: z.array(z.string()).describe('List of issue identifiers to delete'),
-    },
-    async (args) => {
-      const { handler, method } = getHandler('linear_delete_issues');
-      return (handler as any)[method](args);
-    }
-  );
-  */
-
   // linear_get_project
   server.tool(
     'linear_get_project',
@@ -293,96 +278,3 @@ runLinearServer().catch(error => {
     console.error('[FATAL] Uncaught error during server execution:', error);
     process.exit(1);
 });
-
-/**
- * Main server class that handles MCP protocol interactions.
- * Delegates tool operations to domain-specific handlers.
- */
-/* // Commented out original LinearServer
-class LinearServer {
-  private server: Server;
-  private auth: LinearAuth;
-  private graphqlClient?: LinearGraphQLClient;
-  private handlerFactory: HandlerFactory;
-
-  constructor() {
-    this.server = new Server(
-      {
-        name: 'linear-server',
-        version: '0.1.0',
-      },
-      {
-        capabilities: {
-          tools: {},
-        },
-      }
-    );
-
-    this.auth = new LinearAuth();
-    
-    // Log the environment variable to check if it's being passed correctly
-    console.error(`[DEBUG] LINEAR_ACCESS_TOKEN: ${process.env.LINEAR_ACCESS_TOKEN}`);
-
-    // Initialize with PAT if available
-    const accessToken = process.env.LINEAR_ACCESS_TOKEN;
-    if (accessToken) {
-      this.auth.initialize({
-        type: 'pat',
-        accessToken
-      });
-      this.graphqlClient = new LinearGraphQLClient(this.auth.getClient());
-    }
-    
-    // Initialize handler factory
-    this.handlerFactory = new HandlerFactory(this.auth, this.graphqlClient);
-    
-    this.setupRequestHandlers();
-    
-    // Error handling
-    this.server.onerror = (error) => console.error('[MCP Error]', error);
-    process.on('SIGINT', async () => {
-      await this.server.close();
-      process.exit(0);
-    });
-  }
-
-  private setupRequestHandlers() {
-    
-
-    // List available tools
-    this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
-      tools: Object.values(toolSchemas),
-    }));
-
-    // Handle tool calls
-    this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
-      throw new McpError(
-        ErrorCode.MethodNotFound,
-        `Unknown tool: ${request.params.name}`
-      );
-      // try {
-      //   const { handler, method } = this.handlerFactory.getHandlerForTool(request.params.name);
-      //   // Use type assertion to handle dynamic method access
-      //   return await (handler as any)[method](request.params.arguments);
-      // } catch (error) {
-      //   if (error instanceof Error && error.message.startsWith('No handler found')) {
-      //     throw new McpError(
-      //       ErrorCode.MethodNotFound,
-      //       `Unknown tool: ${request.params.name}`
-      //     );
-      //   }
-      //   throw error;
-      // }
-    });
-  }
-
-  async run() {
-    const transport = new StdioServerTransport();
-    await this.server.connect(transport);
-    console.error('Linear MCP server running on stdio');
-  }
-}
-
-const server = new LinearServer();
-server.run().catch(console.error);
-*/ // End commented out original LinearServer

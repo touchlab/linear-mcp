@@ -16,9 +16,23 @@ This package is available on npm: [@touchlab/linear-mcp-integration](https://www
 This server **requires** a **Linear Personal Access Token (PAT)**.
 
 1.  Go to your Linear workspace settings: **Account > Security & access**.
+
+![Step1](./photos/Step1.png)
+
 2.  Under the **Personal API keys** section, click **New API key**.
-3.  Give the key a descriptive label (e.g., "MCP Server Key").
+
+![Step2](./photos/Step2.png)
+
+3.  Give the key a descriptive label (e.g., "MCP Server Key"). 
+For Permissions select **Full Access**. 
+For team access select **All teams you have access to**
+
+![Step3](./photos/Step3.png)
+
 4.  Copy the generated key immediately (it won't be shown again).
+
+![Step4](./photos/Step4.png)
+
 5.  You will need to provide this key to the server using the `LINEAR_ACCESS_TOKEN` environment variable when running it (see Step 2).
 
 ### 2. Running the Server
@@ -90,7 +104,7 @@ The server currently supports the following tools (tested with PAT authenticatio
 
 ## Development (For Contributors)
 
-If you want to contribute to the server development:
+If you want to run the MCP server locally first run these commands:
 
 ```bash
 # Clone the repository
@@ -105,11 +119,26 @@ npm run build
 
 # Start the server (requires LINEAR_ACCESS_TOKEN in .env or environment)
 npm start
-
-# Tests are not currently configured
-# npm test 
-# npm run test:integration 
 ```
+
+Then update your MCP configuration to point to the built `index.js`.
+
+```json
+// Example MCP Client Configuration (e.g., Cline, Cursor, Claude)
+{
+  "mcpServers": {
+    "linear": {
+      "command": "node",
+      "args": ["/absolute/path/to/your/linear-mcp-integration/build/index.js"],
+      "env": {
+        "LINEAR_ACCESS_TOKEN": "lin_api_your_personal_access_token"
+      }
+    }
+  }
+}    
+```
+
+Your client should now be able to access your MCP server.
 
 ## Contributing
 
