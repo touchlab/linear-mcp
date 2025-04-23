@@ -13,6 +13,8 @@ This package is available on npm: [@touchlab/linear-mcp-integration](https://www
 
 This project is based on [cline/linear-mcp](https://github.com/cline/linear-mcp). The logic is largely the same, but key parts of the internals have been modified after testing.
 
+## [NPM Package](https://www.npmjs.com/package/@touchlab/linear-mcp-integration)
+
 ## Setup Guide
 
 ### 1. Authentication (Required)
