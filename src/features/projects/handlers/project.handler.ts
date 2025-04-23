@@ -127,7 +127,7 @@ export class ProjectHandler extends BaseHandler {
       this.validateRequiredParams(args, ['name']);
 
       const result = await client.searchProjects({
-        name: { eq: args.name }
+        name: { containsIgnoreCase: args.name }
       });
 
       return this.createJsonResponse(result);

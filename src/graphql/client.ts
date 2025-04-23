@@ -163,7 +163,7 @@ export class LinearGraphQLClient {
   }
 
   // Search projects
-  async searchProjects(filter: { name?: { eq: string } }): Promise<SearchProjectsResponse> {
+  async searchProjects(filter: { name?: { containsIgnoreCase: string } }): Promise<SearchProjectsResponse> {
     return this.execute<SearchProjectsResponse>(SEARCH_PROJECTS_QUERY, { filter });
   }
 
