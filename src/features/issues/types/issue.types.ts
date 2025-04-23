@@ -26,11 +26,6 @@ export interface UpdateIssueInput {
   stateId?: string;
 }
 
-export interface BulkUpdateIssuesInput {
-  issueIds: string[];
-  update: UpdateIssueInput;
-}
-
 export interface SearchIssuesInput {
   query?: string;
   filter?: {
@@ -47,14 +42,11 @@ export interface SearchIssuesInput {
   first?: number;
   after?: string;
   orderBy?: string;
+  id: string;
 }
 
 export interface DeleteIssueInput {
   id: string;
-}
-
-export interface DeleteIssuesInput {
-  ids: string[];
 }
 
 /**

@@ -2,15 +2,12 @@ import { LinearClient } from '@linear/sdk';
 import { DocumentNode } from 'graphql';
 import { 
   CreateIssueInput, 
-  CreateIssuesInput,
   CreateIssueResponse,
-  CreateIssuesResponse,
   UpdateIssueInput,
   UpdateIssuesResponse,
   SearchIssuesInput,
   SearchIssuesResponse,
   DeleteIssueResponse,
-  Issue,
   IssueBatchResponse
 } from '../features/issues/types/issue.types.js';
 import {
@@ -130,13 +127,6 @@ export class LinearGraphQLClient {
     });
   }
 
-  /* // Remove bulk update client method
-  // Bulk update issues
-  async updateIssues(ids: string[], input: UpdateIssueInput): Promise<UpdateIssuesResponse> {
-    return this.execute<UpdateIssuesResponse>(UPDATE_ISSUES_MUTATION, { ids, input });
-  }
-  */
-
   // Create multiple labels
   async createIssueLabels(labels: LabelInput[]): Promise<LabelResponse> {
     return this.execute<LabelResponse>(CREATE_ISSUE_LABELS, { labels });
@@ -181,40 +171,4 @@ export class LinearGraphQLClient {
   async deleteIssue(id: string): Promise<DeleteIssueResponse> {
     return this.execute<DeleteIssueResponse>(DELETE_ISSUE_MUTATION, { id: id });
   }
-
-  /* // Remove bulk delete client method
-  // Delete multiple issues by iterating single deletes
-  async deleteIssues(ids: string[]): Promise<DeleteIssueResponse> {
-    // const { DELETE_ISSUES_MUTATION } = await import('./mutations.js');
-    // return this.execute<DeleteIssueResponse>(DELETE_ISSUES_MUTATION, { ids });
-
-    let success = true;
-    const errors: string[] = [];
-
-    for (const id of ids) {
-      try {
-        // Call the verified single delete method for each ID
-        const result = await this.deleteIssue(id); 
-        if (!result.issueDelete.success) {
-          success = false;
-          errors.push(`Failed to delete ${id}`);
-          // Optionally log the specific error from result if available
-        }
-      } catch (error) {
-        success = false;
-        errors.push(`Error deleting ${id}: ${error instanceof Error ? error.message : error}`);
-      }
-    }
-
-    if (!success) {
-        // We might want a more structured error response here, 
-        // but for now, just indicate overall failure and list errors.
-        throw new Error(`Bulk delete failed for some issues: ${errors.join('; ')}`);
-    }
-    
-    // Return a success structure compatible with DeleteIssueResponse if needed
-    // Adjust based on actual expected return type for bulk operation success
-    return { issueDelete: { success: true } } as DeleteIssueResponse;
-  }
-  */
 }

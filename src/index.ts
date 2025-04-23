@@ -1,25 +1,13 @@
 #!/usr/bin/env node
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import {
-  // CallToolRequestSchema,
-  ErrorCode,
-  // ListToolsRequestSchema,
-  McpError,
-} from '@modelcontextprotocol/sdk/types.js';
-// import { LinearAuth } from './auth.js';
-// import { LinearGraphQLClient } from './graphql/client.js';
-// import { HandlerFactory } from './core/handlers/handler.factory.js';
-// import { toolSchemas } from './core/types/tool.types.js';
-
-// --- Start: Echo Server Example ---
-import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod"; // Make sure zod is installed: npm install zod
+import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js'; // Removed unused schemas
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
 
 import { LinearAuth } from './auth.js';
 import { LinearGraphQLClient } from './graphql/client.js';
 import { HandlerFactory } from './core/handlers/handler.factory.js';
-// We don't need the old toolSchemas anymore
-// import { toolSchemas } from './core/types/tool.types.js'; 
+// Removed unused toolSchemas import
 
 async function runLinearServer() {
   console.error('Starting Linear MCP server using McpServer...');

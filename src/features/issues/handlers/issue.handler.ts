@@ -6,13 +6,9 @@ import {
   IssueHandlerMethods,
   CreateIssueInput,
   CreateIssuesInput,
-  BulkUpdateIssuesInput,
   SearchIssuesInput,
   DeleteIssueInput,
-  DeleteIssuesInput,
   CreateIssueResponse,
-  CreateIssuesResponse,
-  UpdateIssuesResponse,
   SearchIssuesResponse,
   DeleteIssueResponse,
   Issue,
@@ -147,33 +143,4 @@ export class IssueHandler extends BaseHandler implements IssueHandlerMethods {
       this.handleError(error, 'delete issue');
     }
   }
-
-  /* // Remove bulk delete handler method
-  /**
-   * Deletes multiple issues in bulk.
-   */
-  /*
-  async handleDeleteIssues(args: DeleteIssuesInput): Promise<BaseToolResponse> {
-    try {
-      const client = this.verifyAuth();
-      this.validateRequiredParams(args, ['ids']);
-
-      if (!Array.isArray(args.ids)) {
-        throw new Error('Ids parameter must be an array');
-      }
-
-      const result = await client.deleteIssues(args.ids) as DeleteIssueResponse;
-
-      if (!result.issueDelete.success) {
-        throw new Error('Failed to delete issues');
-      }
-
-      return this.createResponse(
-        `Successfully deleted ${args.ids.length} issues: ${args.ids.join(', ')}`
-      );
-    } catch (error) {
-      this.handleError(error, 'delete issues');
-    }
-  }
-  */
 }
