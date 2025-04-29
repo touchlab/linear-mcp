@@ -97,6 +97,13 @@ The server currently supports the following tools (tested with PAT authenticatio
     *   `linear_create_issues`: Create multiple issues in bulk.
     *   `linear_search_issues`: Search issues (filter by title currently).
     *   `linear_delete_issue`: Delete a single issue.
+    *   `linear_add_attachment_to_issue`: Upload a file from the server's local filesystem and link it in the issue description.
+        *   **Arguments:**
+            *   `issueId` (string, required): ID of the issue to attach to.
+            *   `filePath` (string, required): Local path *on the server* where the file resides.
+            *   `contentType` (string, required): MIME type of the file (e.g., `image/png`, `application/pdf`).
+            *   `fileName` (string, optional): Desired filename for the attachment. Defaults to the name from `filePath` if omitted.
+            *   `title` (string, optional): Title for the attachment link in markdown. Defaults to `fileName` if omitted.
 *   **Projects:**
     *   `linear_create_project_with_issues`: Create a project and associated issues.
     *   `linear_get_project`: Get project details by ID.

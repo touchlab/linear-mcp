@@ -3,22 +3,36 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { ErrorCode, McpError } from '@modelcontextprotocol/sdk/types.js'; // Removed unused schemas
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+// import * as fs from 'fs'; // Import fs for file logging
+// import * as path from 'path'; // Import path for log file path
 
 import { LinearAuth } from './auth.js';
 import { LinearGraphQLClient } from './graphql/client.js';
 import { HandlerFactory } from './core/handlers/handler.factory.js';
 // Removed unused toolSchemas import
 
+// Remove log file path definition
+// const logFilePath = path.join(process.cwd(), 'mcp-server.log');
+
+// Remove logToFile helper function
+/*
+function logToFile(message: string) {
+    const timestamp = new Date().toISOString();
+    fs.appendFileSync(logFilePath, `${timestamp} - ${message}\n`);
+}
+*/
+
 async function runLinearServer() {
+  // Use console.error for startup message
   console.error('Starting Linear MCP server using McpServer...');
 
   // --- Initialize Auth and GraphQL Client --- 
   const auth = new LinearAuth();
   let graphqlClient: LinearGraphQLClient | undefined;
 
-  // Log and Initialize with PAT if available
+  // Log and Initialize with PAT if available (using console.error)
   const accessToken = process.env.LINEAR_ACCESS_TOKEN;
-  console.error(`[DEBUG] LINEAR_ACCESS_TOKEN: ${accessToken ? '***' : 'undefined'}`); // Avoid logging token
+  console.error(`[DEBUG] LINEAR_ACCESS_TOKEN: ${accessToken ? '***' : 'undefined'}`);
   if (accessToken) {
     try {
       auth.initialize({
@@ -26,13 +40,12 @@ async function runLinearServer() {
         accessToken
       });
       graphqlClient = new LinearGraphQLClient(auth.getClient());
-      console.error('Linear Auth initialized with PAT.');
+      console.error('Linear Auth initialized with PAT.'); // Use console.error
     } catch (error) {
-      console.error('[ERROR] Failed to initialize PAT auth:', error);
-      // Allow server to start, but tools requiring auth will fail
+      console.error('[ERROR] Failed to initialize PAT auth:', error); // Use console.error
     }
   } else {
-      console.error('LINEAR_ACCESS_TOKEN not set. Tools requiring auth will fail until OAuth flow is completed (if implemented).');
+      console.error('LINEAR_ACCESS_TOKEN not set. Tools requiring auth will fail...'); // Use console.error
   }
 
   // --- Initialize Handler Factory ---
@@ -243,9 +256,34 @@ async function runLinearServer() {
     }
   );
 
+  // linear_add_attachment_to_issue
+  server.tool(
+    'linear_add_attachment_to_issue',
+    {
+      issueId: z.string().describe('The ID of the Linear issue to attach the file to.'),
+      fileName: z.string().describe('The desired filename for the attachment...').optional(),
+      contentType: z.string().describe('The MIME type of the file...'),
+      filePath: z.string().describe('The local path to the file...'),
+      title: z.string().describe('Optional title for the attachment...').optional(),
+    },
+    async (args) => {
+      try {
+          const { handler, method } = getHandler('linear_add_attachment_to_issue');
+          const result = await (handler as any)[method](args);
+          return result;
+      } catch (error) {
+            // Re-throw McpError or wrap other errors
+            if (error instanceof McpError) {
+                throw error;
+            }
+            throw new McpError(ErrorCode.InternalError, `Tool execution failed: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+  );
+
   // --- Handle Process Exit Gracefully ---
   process.on('SIGINT', async () => {
-      console.error('SIGINT received, closing server...');
+      console.error('SIGINT received, closing server...'); // Use console.error
       await server.close();
       process.exit(0);
   });
@@ -254,15 +292,15 @@ async function runLinearServer() {
   try {
       const transport = new StdioServerTransport();
       await server.connect(transport);
-      console.error('Linear MCP server running on stdio using McpServer');
+      console.error('Linear MCP server running on stdio using McpServer'); // Use console.error
   } catch (error) {
-      console.error('[FATAL] Failed to connect or run server:', error);
+      console.error('[FATAL] Failed to connect or run server:', error); // Use console.error
       process.exit(1);
   }
 }
 
 // --- Run the Server --- 
 runLinearServer().catch(error => {
-    console.error('[FATAL] Uncaught error during server execution:', error);
+    console.error('[FATAL] Uncaught error during server execution:', error); // Use console.error
     process.exit(1);
 });

@@ -5,6 +5,7 @@ import { IssueHandler } from '../../features/issues/handlers/issue.handler.js';
 import { ProjectHandler } from '../../features/projects/handlers/project.handler.js';
 import { TeamHandler } from '../../features/teams/handlers/team.handler.js';
 import { UserHandler } from '../../features/users/handlers/user.handler.js';
+import { AttachmentHandler } from '../../features/attachments/handlers/attachment.handler.js';
 
 /**
  * Factory for creating and managing feature-specific handlers.
@@ -16,6 +17,7 @@ export class HandlerFactory {
   private projectHandler: ProjectHandler;
   private teamHandler: TeamHandler;
   private userHandler: UserHandler;
+  private attachmentHandler: AttachmentHandler;
 
   constructor(auth: LinearAuth, graphqlClient?: LinearGraphQLClient) {
     // Initialize all handlers with shared dependencies
@@ -24,13 +26,14 @@ export class HandlerFactory {
     this.projectHandler = new ProjectHandler(auth, graphqlClient);
     this.teamHandler = new TeamHandler(auth, graphqlClient);
     this.userHandler = new UserHandler(auth, graphqlClient);
+    this.attachmentHandler = new AttachmentHandler(auth, graphqlClient);
   }
 
   /**
    * Gets the appropriate handler for a given tool name.
    */
   getHandlerForTool(toolName: string): {
-    handler: AuthHandler | IssueHandler | ProjectHandler | TeamHandler | UserHandler;
+    handler: AuthHandler | IssueHandler | ProjectHandler | TeamHandler | UserHandler | AttachmentHandler;
     method: string;
   } {
     // Map tool names to their handlers and methods
@@ -55,6 +58,9 @@ export class HandlerFactory {
 
       // User tools
       linear_get_user: { handler: this.userHandler, method: 'handleGetUser' },
+
+      // Attachment tools
+      linear_add_attachment_to_issue: { handler: this.attachmentHandler, method: 'handleAddAttachment' },
     };
 
     const handlerInfo = handlerMap[toolName];
