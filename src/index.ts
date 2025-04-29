@@ -267,23 +267,16 @@ async function runLinearServer() {
       title: z.string().describe('Optional title for the attachment...').optional(),
     },
     async (args) => {
-      // Log arguments to console
-      console.error(`[DEBUG] linear_add_attachment_to_issue received args: ${JSON.stringify(args, null, 2)}`);
       try {
           const { handler, method } = getHandler('linear_add_attachment_to_issue');
           const result = await (handler as any)[method](args);
-          console.error(`[INFO] linear_add_attachment_to_issue completed successfully.`); // Use console.error
           return result;
       } catch (error) {
-            // Log error to console
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            const errorStack = error instanceof Error ? error.stack : 'N/A';
-            console.error(`[ERROR] Error within tool handler: ${errorMessage}\nStack: ${errorStack}`); // Use console.error
             // Re-throw McpError or wrap other errors
             if (error instanceof McpError) {
                 throw error;
             }
-            throw new McpError(ErrorCode.InternalError, `Tool execution failed: ${errorMessage}`);
+            throw new McpError(ErrorCode.InternalError, `Tool execution failed: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
   );

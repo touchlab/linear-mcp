@@ -84,18 +84,12 @@ export class AttachmentHandler extends BaseHandler {
    */
   // Ensure return type matches BaseHandler methods if needed (using BaseToolResponse)
   async handleAddAttachment(args: AddAttachmentArgs): Promise<BaseToolResponse> {
-    // Use this.verifyAuth() instead of checking client directly
-    // const client = this.graphqlClient!;
-    const client = this.verifyAuth(); 
+    const client = this.verifyAuth();
     const { issueId, filePath, contentType, fileName: providedFileName, title: providedTitle } = args;
 
-    // Removed redundant client check
-    // if (!client) {
-    //     throw new McpError(ErrorCode.InternalError, 'Linear client is not available in AttachmentHandler.');
-    // }
-
-    // 1. Read file content (using validateRequiredParams could be added here)
     this.validateRequiredParams(args, ['issueId', 'filePath', 'contentType']);
+
+    // 1. Read file content
     let fileBuffer: Buffer;
     let resolvedFileName: string;
     let fileSize: number;
@@ -105,43 +99,32 @@ export class AttachmentHandler extends BaseHandler {
         fileBuffer = await fs.promises.readFile(filePath);
         fileSize = fileBuffer.length;
         finalFileName = providedFileName || resolvedFileName;
-        console.error(`[AttachmentHandler] Read ${fileSize} bytes from ${finalFileName}`);
     } catch (error: any) {
-        console.error(`[AttachmentHandler] Error reading file ${filePath}:`, error);
         if (error.code === 'ENOENT') { throw new McpError(ErrorCode.InvalidParams, `File not found: ${filePath}`); }
         if (error.code === 'EACCES') { throw new McpError(ErrorCode.InternalError, `Permission denied reading file: ${filePath}`); }
-        // Use BaseHandler error handling
         this.handleError(error, `read file ${filePath}`);
-        // throw new McpError(ErrorCode.InternalError, `Failed to read file ${filePath}: ${error.message}`);
     }
 
-    // 2. Get Upload URL from Linear 
+    // 2. Get Upload URL from Linear
     let uploadDetails: UploadFileDetails;
     let assetLinkUrl: string;
     try {
-      console.error(`[AttachmentHandler] Requesting upload URL for ${finalFileName} (${fileSize} bytes, ${contentType})...`);
       const uploadResponse = await client.execute<FileUploadResponse>(FILE_UPLOAD_MUTATION, {
           contentType: contentType,
           filename: finalFileName,
           size: fileSize,
       });
       if (!uploadResponse?.fileUpload?.success || !uploadResponse?.fileUpload?.uploadFile?.uploadUrl || !uploadResponse?.fileUpload?.uploadFile?.assetUrl) {
-        console.error("[AttachmentHandler] Invalid response from fileUpload mutation:", uploadResponse);
         throw new Error('Failed to get upload URL from Linear.');
       }
       uploadDetails = uploadResponse.fileUpload.uploadFile;
       assetLinkUrl = uploadDetails.assetUrl;
-      console.error(`[AttachmentHandler] Received Upload URL: ${uploadDetails.uploadUrl}, Asset URL: ${assetLinkUrl}`);
     } catch (error) {
-        // Use BaseHandler error handling
         this.handleError(error, 'request upload URL');
-        // console.error("[AttachmentHandler] Error requesting upload URL:", error);
-        // throw new McpError(ErrorCode.InternalError, `Failed to get upload URL: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 
     // 3. Upload File to the received URL
     try {
-        console.error(`[AttachmentHandler] Uploading file to ${uploadDetails.uploadUrl}...`);
         const uploadHeaders: Record<string, string> = {
             'Content-Type': contentType,
             'Cache-Control': 'public, max-age=31536000'
@@ -152,29 +135,19 @@ export class AttachmentHandler extends BaseHandler {
         const uploadResponse = await fetch(uploadDetails.uploadUrl, { method: 'PUT', headers: uploadHeaders, body: fileBuffer });
         if (!uploadResponse.ok) {
              const errorBody = await uploadResponse.text();
-             console.error(`[AttachmentHandler] Upload failed: ${uploadResponse.status}`, errorBody);
              throw new Error(`Upload failed: ${uploadResponse.status}`);
         }
-        console.error(`[AttachmentHandler] File uploaded successfully.`);
     } catch (error) {
-        // Use BaseHandler error handling
         this.handleError(error, 'upload file');
-        // console.error("[AttachmentHandler] Error uploading file:", error);
-        // throw new McpError(ErrorCode.InternalError, `Failed to upload file: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 
     // 4. Fetch existing issue description
     let currentDescription = '';
     try {
-        console.error(`[AttachmentHandler] Fetching current description for issue ${issueId}...`);
         const issueResponse = await client.getIssue(issueId);
         currentDescription = (issueResponse?.issue as any)?.description || '';
-        console.error(`[AttachmentHandler] Fetched current description.`);
     } catch (error) {
-         // Use BaseHandler error handling for fetch failure
          this.handleError(error, `fetch description for issue ${issueId}`);
-        // console.error("[AttachmentHandler] Error fetching issue description:", error);
-        // throw new McpError(ErrorCode.InternalError, `Failed to fetch issue description: ${error.message}`);
     }
 
     // 5. Append Markdown link and update issue
@@ -183,25 +156,17 @@ export class AttachmentHandler extends BaseHandler {
         const markdownLink = `\n\n![${attachmentTitle}](${assetLinkUrl})\n`;
         const newDescription = currentDescription + markdownLink;
 
-        console.error(`[AttachmentHandler] Updating issue ${issueId} description...`);
         const updateResponse = await client.updateIssue(issueId, { description: newDescription });
 
         if (!(updateResponse as any)?.issueUpdate?.success && !(updateResponse as any)?.success) {
-             console.error("[AttachmentHandler] Failed to update issue description:", updateResponse);
              throw new Error('Issue description update failed after successful file upload.');
         }
-
-        console.error(`[AttachmentHandler] Issue description updated successfully for ${issueId}.`);
         
-        // Use createResponse from BaseHandler
         const successMessage = `Attachment uploaded and linked successfully to issue ${issueId}. Asset URL: ${assetLinkUrl}`;
         return this.createResponse(successMessage);
 
     } catch (error) {
-         // Use BaseHandler error handling for update failure
          this.handleError(error, `update description for issue ${issueId}`);
-        // console.error("[AttachmentHandler] Error updating issue description:", error);
-        // throw new McpError(ErrorCode.InternalError, `Failed to update issue description: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 } 
