@@ -1,6 +1,6 @@
 {
   "name": "@touchlab/linear-mcp-integration",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "MCP server providing tools to interact with the Linear API (Issues, Projects, Teams).",
   "main": "build/index.js",
   "bin": "build/index.js",
