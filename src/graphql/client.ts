@@ -1,5 +1,6 @@
 import { LinearClient } from '@linear/sdk';
 import { DocumentNode } from 'graphql';
+import gql from 'graphql-tag';
 import { 
   CreateIssueInput, 
   CreateIssueResponse,
@@ -8,7 +9,8 @@ import {
   SearchIssuesInput,
   SearchIssuesResponse,
   DeleteIssueResponse,
-  IssueBatchResponse
+  IssueBatchResponse,
+  Issue
 } from '../features/issues/types/issue.types.js';
 import {
   ProjectInput,
@@ -34,6 +36,21 @@ import {
     CREATE_ISSUE_LABELS 
 } from './mutations.js'; 
 import { SEARCH_ISSUES_QUERY, GET_TEAMS_QUERY, GET_USER_QUERY, GET_PROJECT_QUERY, SEARCH_PROJECTS_QUERY } from './queries.js';
+
+// Define the wrapper response type for GetIssue query
+interface SingleIssueResponse {
+  issue: Issue; // Uses the imported Issue type
+}
+
+// Define the query to get a single issue's description
+const GET_ISSUE_QUERY = gql`
+  query GetIssue($id: String!) {
+    issue(id: $id) {
+      id
+      description
+    }
+  }
+`;
 
 export class LinearGraphQLClient {
   private linearClient: LinearClient;
@@ -122,7 +139,7 @@ export class LinearGraphQLClient {
   // Update a single issue
   async updateIssue(id: string, input: UpdateIssueInput): Promise<UpdateIssuesResponse> {
     return this.execute<UpdateIssuesResponse>(UPDATE_ISSUES_MUTATION, {
-      ids: [id],
+      id: id,
       input,
     });
   }
@@ -170,5 +187,10 @@ export class LinearGraphQLClient {
   // Delete a single issue
   async deleteIssue(id: string): Promise<DeleteIssueResponse> {
     return this.execute<DeleteIssueResponse>(DELETE_ISSUE_MUTATION, { id: id });
+  }
+
+  // Method to get a single issue by ID
+  async getIssue(id: string): Promise<SingleIssueResponse> {
+    return this.execute<SingleIssueResponse>(GET_ISSUE_QUERY, { id });
   }
 }
